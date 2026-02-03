@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.SwapVert
+import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -20,10 +20,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.astamato.exchangeratecalculatorapp.ui.theme.ExchangeRateCalculatorAppTheme
 import com.astamato.exchangeratecalculatorapp.ui.util.CurrencyUtils
+import com.astamato.exchangeratecalculatorapp.ui.viewmodel.ExchangeRateUiState
 
 @Composable
 fun CurrencyInputSection(
-  state: com.astamato.exchangeratecalculatorapp.ui.viewmodel.ExchangeRateUiState.Success,
+  state: ExchangeRateUiState.Success,
   onSwapCurrencies: () -> Unit,
   onActiveFieldChange: (Int) -> Unit,
   onCurrencyClick: (Boolean) -> Unit,
@@ -67,7 +68,7 @@ fun CurrencyInputSection(
           .background(MaterialTheme.colorScheme.primary),
     ) {
       Icon(
-        imageVector = Icons.Default.SwapVert,
+        imageVector = Icons.Default.ArrowDownward,
         contentDescription = "Swap currencies",
         tint = Color.White,
       )

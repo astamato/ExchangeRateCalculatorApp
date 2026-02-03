@@ -5,25 +5,27 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.astamato.exchangeratecalculatorapp.ui.theme.ExchangeRateCalculatorAppTheme
 import com.astamato.exchangeratecalculatorapp.ui.viewmodel.ExchangeRateUiState
 import com.astamato.exchangeratecalculatorapp.ui.viewmodel.MainViewModel
 import java.math.BigDecimal
@@ -31,10 +33,32 @@ import java.text.NumberFormat
 import java.util.Locale
 
 @Composable
-fun CurrencyExchangeScreen(viewModel: MainViewModel = viewModel()) {
-  val uiState by viewModel.uiState.collectAsState()
+fun CurrencyExchangeScreen(
+  modifier: Modifier = Modifier,
+  viewModel: MainViewModel = viewModel()
+) {
+  val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+  StatelessCurrencyExchangeScreen(
+    modifier = modifier,
+    uiState = uiState,
+    onKeypadPress = viewModel::onKeypadPress,
+    onCurrencySelected = viewModel::onCurrencySelected,
+    onSwapCurrencies = viewModel::onSwapCurrencies,
+    onActiveFieldChange = viewModel::onActiveFieldChange,
+  )
+}
 
+@Composable
+fun StatelessCurrencyExchangeScreen(
+  uiState: ExchangeRateUiState,
+  onKeypadPress: (String) -> Unit,
+  onCurrencySelected: (String) -> Unit,
+  onSwapCurrencies: () -> Unit,
+  onActiveFieldChange: (Int) -> Unit,
+  modifier: Modifier = Modifier,
+) {
   Scaffold(
+    modifier = modifier,
     contentWindowInsets = WindowInsets.safeDrawing,
   ) { paddingValues ->
     Column(
@@ -43,12 +67,11 @@ fun CurrencyExchangeScreen(viewModel: MainViewModel = viewModel()) {
           .fillMaxSize()
           .padding(paddingValues),
     ) {
-      Text(
-        text = "Exchange",
-        modifier = Modifier.padding(16.dp),
-        style = MaterialTheme.typography.titleLarge,
+      Spacer(
+        Modifier
+          .height(30.dp)
       )
-      when (val state = uiState) {
+      when (uiState) {
         is ExchangeRateUiState.Loading -> {
           Column(
             modifier = Modifier.fillMaxSize(),
@@ -61,11 +84,11 @@ fun CurrencyExchangeScreen(viewModel: MainViewModel = viewModel()) {
 
         is ExchangeRateUiState.Success -> {
           CurrencyExchangeContent(
-            state = state,
-            onKeypadPress = viewModel::onKeypadPress,
-            onCurrencySelected = viewModel::onCurrencySelected,
-            onSwapCurrencies = viewModel::onSwapCurrencies,
-            onActiveFieldChange = viewModel::onActiveFieldChange,
+            state = uiState,
+            onKeypadPress = onKeypadPress,
+            onCurrencySelected = onCurrencySelected,
+            onSwapCurrencies = onSwapCurrencies,
+            onActiveFieldChange = onActiveFieldChange,
           )
         }
 
@@ -75,7 +98,7 @@ fun CurrencyExchangeScreen(viewModel: MainViewModel = viewModel()) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
           ) {
-            Text(text = state.message)
+            Text(text = uiState.message)
           }
         }
       }
@@ -111,7 +134,10 @@ fun CurrencyExchangeContent(
       exchangeRate = formattedExchangeRate,
       selectedCurrency = state.selectedCurrency,
     )
-    Spacer(modifier = Modifier.weight(0.5f))
+    Spacer(
+      Modifier
+        .height(30.dp)
+    )
     CurrencyInputSection(
       state = state,
       onSwapCurrencies = onSwapCurrencies,
@@ -138,5 +164,56 @@ fun CurrencyExchangeContent(
         )
       }
     }
+  }
+}
+
+@Preview(showBackground = true, name = "Success State")
+@Composable
+fun StatelessCurrencyExchangeScreenSuccessPreview() {
+  val tickers = emptyList<com.astamato.exchangeratecalculatorapp.data.Ticker>()
+  val uiState =
+    ExchangeRateUiState.Success(
+      tickers = tickers,
+      availableCurrencies = listOf("USDc", "MXN", "EURc", "COP"),
+      selectedCurrency = "MXN",
+      amount1 = "9,999",
+      amount2 = "184,065.59",
+    )
+  ExchangeRateCalculatorAppTheme {
+    StatelessCurrencyExchangeScreen(
+      uiState = uiState,
+      onKeypadPress = {},
+      onCurrencySelected = {},
+      onSwapCurrencies = {},
+      onActiveFieldChange = {},
+    )
+  }
+}
+
+@Preview(showBackground = true, name = "Loading State")
+@Composable
+fun StatelessCurrencyExchangeScreenLoadingPreview() {
+  ExchangeRateCalculatorAppTheme {
+    StatelessCurrencyExchangeScreen(
+      uiState = ExchangeRateUiState.Loading,
+      onKeypadPress = {},
+      onCurrencySelected = {},
+      onSwapCurrencies = {},
+      onActiveFieldChange = {},
+    )
+  }
+}
+
+@Preview(showBackground = true, name = "Error State")
+@Composable
+fun StatelessCurrencyExchangeScreenErrorPreview() {
+  ExchangeRateCalculatorAppTheme {
+    StatelessCurrencyExchangeScreen(
+      uiState = ExchangeRateUiState.Error("Failed to fetch data"),
+      onKeypadPress = {},
+      onCurrencySelected = {},
+      onSwapCurrencies = {},
+      onActiveFieldChange = {},
+    )
   }
 }

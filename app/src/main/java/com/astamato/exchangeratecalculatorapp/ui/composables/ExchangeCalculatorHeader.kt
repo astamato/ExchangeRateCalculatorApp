@@ -38,9 +38,9 @@ fun ExchangeCalculatorHeader(
 fun ExchangeCalculatorHeaderPreview() {
   val numberFormat =
     NumberFormat.getNumberInstance(Locale.US).apply {
-      maximumFractionDigits = 2
+      maximumFractionDigits = 4
     }
-  val formattedExchangeRate = numberFormat.format(18.4097)
+  val formattedExchangeRate = numberFormat.format(18.409712234)
 
   ExchangeRateCalculatorAppTheme {
     ExchangeCalculatorHeader(
