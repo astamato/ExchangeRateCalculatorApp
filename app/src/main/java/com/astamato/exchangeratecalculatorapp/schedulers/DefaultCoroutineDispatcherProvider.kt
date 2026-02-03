@@ -1,4 +1,4 @@
-package com.astamato.askgranola.common.dispatchers
+package com.astamato.exchangeratecalculatorapp.schedulers
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

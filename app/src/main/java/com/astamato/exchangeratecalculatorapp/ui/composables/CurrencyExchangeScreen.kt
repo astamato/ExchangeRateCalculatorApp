@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -53,19 +55,20 @@ import java.util.Locale
 fun CurrencyExchangeScreen(viewModel: MainViewModel = viewModel()) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Scaffold(topBar = {
-        Text(
-            text = "Exchange",
-            modifier = Modifier.padding(16.dp),
-            style = MaterialTheme.typography.titleLarge,
-        )
-    }) { paddingValues ->
+    Scaffold(
+        contentWindowInsets = WindowInsets.safeDrawing,
+    ) { paddingValues ->
         Column(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
+            Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
         ) {
+            Text(
+                text = "Exchange",
+                modifier = Modifier.padding(16.dp),
+                style = MaterialTheme.typography.titleLarge,
+            )
             when (val state = uiState) {
                 is ExchangeRateUiState.Loading -> {
                     Column(
@@ -130,9 +133,9 @@ fun CurrencyExchangeContent(
 
     Column(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
+        Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
     ) {
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = "Exchange calculator", style = MaterialTheme.typography.headlineSmall)
@@ -167,9 +170,9 @@ fun CurrencyExchangeContent(
             IconButton(
                 onClick = onSwapCurrencies,
                 modifier =
-                    Modifier
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary),
+                Modifier
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary),
             ) {
                 Icon(
                     imageVector = Icons.Default.SwapVert,
@@ -221,11 +224,11 @@ fun CurrencyRow(
 
     Row(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .background(backgroundColor)
-                .clickable(onClick = onRowClick)
-                .padding(vertical = 16.dp, horizontal = 8.dp),
+        Modifier
+            .fillMaxWidth()
+            .background(backgroundColor)
+            .clickable(onClick = onRowClick)
+            .padding(vertical = 16.dp, horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(
@@ -273,10 +276,10 @@ fun ChooseCurrencySheet(
             if (currency != null) {
                 Row(
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .clickable { onCurrencySelected(currencyCode) }
-                            .padding(vertical = 12.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable { onCurrencySelected(currencyCode) }
+                        .padding(vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(text = currency.flag, fontSize = 24.sp)

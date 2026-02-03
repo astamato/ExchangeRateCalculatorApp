@@ -4,6 +4,8 @@ import com.astamato.exchangeratecalculatorapp.network.ExchangeRateApiService
 import com.astamato.exchangeratecalculatorapp.network.interceptor.EmptyListOnErrorInterceptor
 import com.astamato.exchangeratecalculatorapp.repository.ExchangeRateRepository
 import com.astamato.exchangeratecalculatorapp.repository.ExchangeRateRepositoryImpl
+import com.astamato.exchangeratecalculatorapp.schedulers.CoroutineDispatcherProvider
+import com.astamato.exchangeratecalculatorapp.schedulers.DefaultCoroutineDispatcherProvider
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Binds
 import dagger.Module
@@ -22,6 +24,10 @@ abstract class AppModule {
     @Binds
     @Singleton
     abstract fun bindRepository(impl: ExchangeRateRepositoryImpl): ExchangeRateRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCoroutineDispatcherProvider(defaultCoroutineDispatcherProvider: DefaultCoroutineDispatcherProvider): CoroutineDispatcherProvider
 
     companion object {
         @Provides
