@@ -10,26 +10,28 @@ import javax.inject.Singleton
 
 @Singleton
 class ExchangeRateRepositoryImpl @Inject constructor(
-    private val dispatcherProvider: CoroutineDispatcherProvider,
-    private val api: ExchangeRateApiService,
+  private val dispatcherProvider: CoroutineDispatcherProvider,
+  private val api: ExchangeRateApiService,
 ) : ExchangeRateRepository {
-    override suspend fun getTickers(currencies: String): List<Ticker> = withContext(dispatcherProvider.io) {
-        try {
-            api.getTickers(currencies)
-        } catch (e: Exception) {
-            emptyList()
-        }
+  override suspend fun getTickers(currencies: String): List<Ticker> =
+    withContext(dispatcherProvider.io) {
+      try {
+        api.getTickers(currencies)
+      } catch (e: Exception) {
+        emptyList()
+      }
     }
 
-    override suspend fun getAvailableCurrencies(): List<String> = withContext(dispatcherProvider.io) {
-        try {
-            val currencies = api.getAvailableCurrencies()
-            currencies.ifEmpty {
-                listOf("MXN", "ARS", "BRL", "COP")
-            }
-        } catch (e: Exception) {
-            Log.e("ExchangeRateRepo", "getAvailableCurrencies() failed", e)
-            listOf("MXN", "ARS", "BRL", "COP")
+  override suspend fun getAvailableCurrencies(): List<String> =
+    withContext(dispatcherProvider.io) {
+      try {
+        val currencies = api.getAvailableCurrencies()
+        currencies.ifEmpty {
+          listOf("MXN", "ARS", "BRL", "COP")
         }
+      } catch (e: Exception) {
+        Log.e("ExchangeRateRepo", "getAvailableCurrencies() failed", e)
+        listOf("MXN", "ARS", "BRL", "COP")
+      }
     }
 }

@@ -1,20 +1,23 @@
 package com.astamato.exchangeratecalculatorapp.ui.util
 
+import androidx.annotation.DrawableRes
+import com.astamato.exchangeratecalculatorapp.R
+
 data class Currency(
-    val code: String,
-    val name: String,
-    val flag: String,
+  val code: String,
+  val name: String,
+  @DrawableRes val flag: Int,
 )
 
 object CurrencyUtils {
-    val currencies =
-        listOf(
-            Currency("USDc", "USD Coin", "\ud83c\uddfa\ud83c\uddf8"),
-            Currency("ARS", "Argentine Peso", "\ud83c\udde6\ud83c\uddf7"),
-            Currency("COP", "Colombian Peso", "\ud83c\udde8\ud83c\uddf4"),
-            Currency("MXN", "Mexican Peso", "\ud83c\uddf2\ud83c\uddfd"),
-            Currency("BRL", "Brazilian Real", "\ud83c\udde7\ud83c\uddf7"),
-        )
+  val currencies =
+    listOf(
+      Currency("USDc", "USD Coin", R.drawable.logo_us),
+      Currency("ARS", "Argentine Peso", R.drawable.logo_ar),
+      Currency("COP", "Colombian Peso", R.drawable.logo_co),
+      Currency("MXN", "Mexican Peso", R.drawable.logo_mx),
+      Currency("BRL", "Brazilian Real", R.drawable.logo_br),
+    )
 
-    fun getCurrency(code: String): Currency? = currencies.find { it.code == code }
+  fun getCurrency(code: String): Currency? = currencies.find { it.code == code }
 }

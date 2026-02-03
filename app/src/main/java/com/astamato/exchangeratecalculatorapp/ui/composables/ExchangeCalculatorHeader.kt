@@ -1,0 +1,51 @@
+package com.astamato.exchangeratecalculatorapp.ui.composables
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.astamato.exchangeratecalculatorapp.ui.theme.ExchangeRateCalculatorAppTheme
+import java.text.NumberFormat
+import java.util.Locale
+
+@Composable
+fun ExchangeCalculatorHeader(
+  exchangeRate: String,
+  selectedCurrency: String,
+  modifier: Modifier = Modifier,
+) {
+  Column(modifier = modifier.padding(horizontal = 16.dp)) {
+    Spacer(modifier = Modifier.height(16.dp))
+    Text(text = "Exchange calculator", style = MaterialTheme.typography.headlineSmall)
+    Spacer(modifier = Modifier.height(8.dp))
+    Text(
+      text = "1 USDc = $exchangeRate $selectedCurrency",
+      style = MaterialTheme.typography.bodyMedium,
+      color = Color.Gray,
+    )
+  }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ExchangeCalculatorHeaderPreview() {
+  val numberFormat =
+    NumberFormat.getNumberInstance(Locale.US).apply {
+      maximumFractionDigits = 2
+    }
+  val formattedExchangeRate = numberFormat.format(18.4097)
+
+  ExchangeRateCalculatorAppTheme {
+    ExchangeCalculatorHeader(
+      exchangeRate = formattedExchangeRate,
+      selectedCurrency = "MXN",
+    )
+  }
+}

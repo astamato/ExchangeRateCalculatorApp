@@ -21,36 +21,35 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class AppModule {
-    @Binds
+  @Binds
+  @Singleton
+  abstract fun bindRepository(impl: ExchangeRateRepositoryImpl): ExchangeRateRepository
+
+  @Binds
+  @Singleton
+  abstract fun bindCoroutineDispatcherProvider(defaultCoroutineDispatcherProvider: DefaultCoroutineDispatcherProvider): CoroutineDispatcherProvider
+
+  companion object {
+    @Provides
     @Singleton
-    abstract fun bindRepository(impl: ExchangeRateRepositoryImpl): ExchangeRateRepository
+    fun provideOkHttpClient(): OkHttpClient =
+      OkHttpClient.Builder()
+        .addInterceptor(EmptyListOnErrorInterceptor())
+        .build()
 
-    @Binds
+    @Provides
     @Singleton
-    abstract fun bindCoroutineDispatcherProvider(defaultCoroutineDispatcherProvider: DefaultCoroutineDispatcherProvider): CoroutineDispatcherProvider
-
-    companion object {
-        @Provides
-        @Singleton
-        fun provideOkHttpClient(): OkHttpClient {
-            return OkHttpClient.Builder()
-                .addInterceptor(EmptyListOnErrorInterceptor())
-                .build()
-        }
-
-        @Provides
-        @Singleton
-        fun provideExchangeRateApi(okHttpClient: OkHttpClient): ExchangeRateApiService {
-            val json = Json {
-                ignoreUnknownKeys = true
-            }
-            return Retrofit
-                .Builder()
-                .baseUrl("https://api.dolarapp.dev/")
-                .client(okHttpClient)
-                .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-                .build()
-                .create(ExchangeRateApiService::class.java)
-        }
+    fun provideExchangeRateApi(okHttpClient: OkHttpClient): ExchangeRateApiService {
+      val json = Json {
+        ignoreUnknownKeys = true
+      }
+      return Retrofit
+        .Builder()
+        .baseUrl("https://api.dolarapp.dev/")
+        .client(okHttpClient)
+        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+        .build()
+        .create(ExchangeRateApiService::class.java)
     }
+  }
 }
