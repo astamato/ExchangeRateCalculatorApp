@@ -7,5 +7,5 @@ data class Ticker(
     val ask: String,
     val bid: String,
     val book: String,
-    val date: String
+    val date: String,
 )

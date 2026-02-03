@@ -14,7 +14,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class AppModule {
@@ -26,15 +25,16 @@ abstract class AppModule {
         @Provides
         @Singleton
         fun provideExchangeRateApi(): ExchangeRateApiService {
-            val json = Json {
-                ignoreUnknownKeys = true
-            }
-            return Retrofit.Builder()
+            val json =
+                Json {
+                    ignoreUnknownKeys = true
+                }
+            return Retrofit
+                .Builder()
                 .baseUrl("https://api.dolarapp.dev/")
                 .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
                 .build()
                 .create(ExchangeRateApiService::class.java)
         }
-
     }
 }

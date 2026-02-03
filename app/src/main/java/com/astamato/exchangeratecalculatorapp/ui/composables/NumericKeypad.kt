@@ -15,18 +15,19 @@ import androidx.compose.ui.unit.dp
 fun NumericKeypad(
     onKeyPress: (String) -> Unit
 ) {
-    val keypadLayout = listOf(
-        listOf("1", "2", "3"),
-        listOf("4", "5", "6"),
-        listOf("7", "8", "9"),
-        listOf(".", "0", "<")
-    )
+    val keypadLayout =
+        listOf(
+            listOf("1", "2", "3"),
+            listOf("4", "5", "6"),
+            listOf("7", "8", "9"),
+            listOf(".", "0", "<"),
+        )
 
     Column(modifier = Modifier.padding(16.dp)) {
         keypadLayout.forEach { row ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 row.forEach { key ->
                     Button(onClick = { onKeyPress(key) }) {

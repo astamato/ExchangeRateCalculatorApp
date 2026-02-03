@@ -57,20 +57,21 @@ fun CurrencyExchangeScreen(viewModel: MainViewModel = viewModel()) {
         Text(
             text = "Exchange",
             modifier = Modifier.padding(16.dp),
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
         )
     }) { paddingValues ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
         ) {
             when (val state = uiState) {
                 is ExchangeRateUiState.Loading -> {
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         CircularProgressIndicator()
                     }
@@ -82,7 +83,7 @@ fun CurrencyExchangeScreen(viewModel: MainViewModel = viewModel()) {
                         onKeypadPress = viewModel::onKeypadPress,
                         onCurrencySelected = viewModel::onCurrencySelected,
                         onSwapCurrencies = viewModel::onSwapCurrencies,
-                        onActiveFieldChange = viewModel::onActiveFieldChange
+                        onActiveFieldChange = viewModel::onActiveFieldChange,
                     )
                 }
 
@@ -90,7 +91,7 @@ fun CurrencyExchangeScreen(viewModel: MainViewModel = viewModel()) {
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text(text = state.message)
                     }
@@ -107,28 +108,31 @@ fun CurrencyExchangeContent(
     onKeypadPress: (String) -> Unit,
     onCurrencySelected: (String) -> Unit,
     onSwapCurrencies: () -> Unit,
-    onActiveFieldChange: (Int) -> Unit
+    onActiveFieldChange: (Int) -> Unit,
 ) {
     var showBottomSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState()
 
-    val (primaryCurrency, secondaryCurrency) = if (state.isUsdcPrimary) {
-        CurrencyUtils.getCurrency("USDc")!! to CurrencyUtils.getCurrency(state.selectedCurrency)!!
-    } else {
-        CurrencyUtils.getCurrency(state.selectedCurrency)!! to CurrencyUtils.getCurrency("USDc")!!
-    }
+    val (primaryCurrency, secondaryCurrency) =
+        if (state.isUsdcPrimary) {
+            CurrencyUtils.getCurrency("USDc")!! to CurrencyUtils.getCurrency(state.selectedCurrency)!!
+        } else {
+            CurrencyUtils.getCurrency(state.selectedCurrency)!! to CurrencyUtils.getCurrency("USDc")!!
+        }
 
     val selectedTicker = state.tickers.find { it.book.endsWith(state.selectedCurrency.lowercase()) }
     val exchangeRate = selectedTicker?.ask?.toBigDecimal() ?: BigDecimal.ONE
-    val numberFormat = NumberFormat.getNumberInstance(Locale.US).apply {
-        maximumFractionDigits = 2
-    }
+    val numberFormat =
+        NumberFormat.getNumberInstance(Locale.US).apply {
+            maximumFractionDigits = 2
+        }
     val formattedExchangeRate = numberFormat.format(exchangeRate)
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
     ) {
         Spacer(modifier = Modifier.height(16.dp))
         Text(text = "Exchange calculator", style = MaterialTheme.typography.headlineSmall)
@@ -136,7 +140,7 @@ fun CurrencyExchangeContent(
         Text(
             text = "1 USDc = $formattedExchangeRate ${state.selectedCurrency}",
             style = MaterialTheme.typography.bodyMedium,
-            color = Color.Gray
+            color = Color.Gray,
         )
         Spacer(modifier = Modifier.height(32.dp))
 
@@ -148,7 +152,7 @@ fun CurrencyExchangeContent(
                     onRowClick = { onActiveFieldChange(1) },
                     onCurrencyClick = { if (!state.isUsdcPrimary) showBottomSheet = true },
                     isCurrencySelectable = !state.isUsdcPrimary,
-                    isActive = state.activeField == 1
+                    isActive = state.activeField == 1,
                 )
                 Divider(modifier = Modifier.padding(vertical = 4.dp))
                 CurrencyRow(
@@ -157,19 +161,20 @@ fun CurrencyExchangeContent(
                     onRowClick = { onActiveFieldChange(2) },
                     onCurrencyClick = { if (state.isUsdcPrimary) showBottomSheet = true },
                     isCurrencySelectable = state.isUsdcPrimary,
-                    isActive = state.activeField == 2
+                    isActive = state.activeField == 2,
                 )
             }
             IconButton(
                 onClick = onSwapCurrencies,
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary)
+                modifier =
+                    Modifier
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary),
             ) {
                 Icon(
                     imageVector = Icons.Default.SwapVert,
                     contentDescription = "Swap currencies",
-                    tint = Color.White
+                    tint = Color.White,
                 )
             }
         }
@@ -181,7 +186,7 @@ fun CurrencyExchangeContent(
         if (showBottomSheet) {
             ModalBottomSheet(
                 onDismissRequest = { showBottomSheet = false },
-                sheetState = sheetState
+                sheetState = sheetState,
             ) {
                 ChooseCurrencySheet(
                     availableCurrencies = state.availableCurrencies,
@@ -190,7 +195,7 @@ fun CurrencyExchangeContent(
                         onCurrencySelected(it)
                         showBottomSheet = false
                     },
-                    onClose = { showBottomSheet = false }
+                    onClose = { showBottomSheet = false },
                 )
             }
         }
@@ -204,26 +209,28 @@ fun CurrencyRow(
     onRowClick: () -> Unit,
     onCurrencyClick: () -> Unit,
     isCurrencySelectable: Boolean,
-    isActive: Boolean
+    isActive: Boolean,
 ) {
-    val numberFormat = NumberFormat.getNumberInstance(Locale.US).apply {
-        maximumFractionDigits = 2
-    }
+    val numberFormat =
+        NumberFormat.getNumberInstance(Locale.US).apply {
+            maximumFractionDigits = 2
+        }
     val formattedAmount = amount.toBigDecimalOrNull()?.let { numberFormat.format(it) } ?: amount
 
     val backgroundColor = if (isActive) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) else Color.Transparent
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(backgroundColor)
-            .clickable(onClick = onRowClick)
-            .padding(vertical = 16.dp, horizontal = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .background(backgroundColor)
+                .clickable(onClick = onRowClick)
+                .padding(vertical = 16.dp, horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(
             modifier = Modifier.clickable(enabled = isCurrencySelectable, onClick = onCurrencyClick),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(text = currency.flag, fontSize = 24.sp)
             Spacer(modifier = Modifier.padding(start = 16.dp))
@@ -234,10 +241,10 @@ fun CurrencyRow(
         }
         Spacer(modifier = Modifier.weight(1f))
         Text(
-            text = "$${formattedAmount}",
+            text = "$$formattedAmount",
             fontSize = 22.sp,
             fontWeight = if (isActive) FontWeight.Bold else FontWeight.Light,
-            letterSpacing = 1.1.sp
+            letterSpacing = 1.1.sp,
         )
     }
 }
@@ -247,13 +254,13 @@ fun ChooseCurrencySheet(
     availableCurrencies: List<String>,
     selectedCurrency: String,
     onCurrencySelected: (String) -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
 ) {
     Column(modifier = Modifier.padding(16.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(text = "Choose currency", style = MaterialTheme.typography.titleLarge)
             IconButton(onClick = onClose) {
@@ -265,11 +272,12 @@ fun ChooseCurrencySheet(
             val currency = CurrencyUtils.getCurrency(currencyCode)
             if (currency != null) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { onCurrencySelected(currencyCode) }
-                        .padding(vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable { onCurrencySelected(currencyCode) }
+                            .padding(vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(text = currency.flag, fontSize = 24.sp)
                     Spacer(modifier = Modifier.padding(start = 16.dp))
@@ -279,7 +287,7 @@ fun ChooseCurrencySheet(
                             imageVector = Icons.Default.CheckCircle,
                             contentDescription = "Selected",
                             tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(24.dp),
                         )
                     }
                 }
