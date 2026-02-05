@@ -1,21 +1,31 @@
 package com.astamato.exchangeratecalculatorapp.ui.composables
 
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,7 +53,6 @@ fun CurrencyRow(
       maximumFractionDigits = 2
     }
   val formattedAmount = amount.toBigDecimalOrNull()?.let { numberFormat.format(it) } ?: amount
-
   val backgroundColor = if (isActive) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) else Color.Transparent
 
   Row(
@@ -71,13 +80,41 @@ fun CurrencyRow(
       }
     }
     Spacer(modifier = Modifier.weight(1f))
-    Text(
-      text = "$$formattedAmount",
-      fontSize = 22.sp,
-      fontWeight = if (isActive) FontWeight.Bold else FontWeight.Light,
-      letterSpacing = 1.1.sp,
-    )
+    Row(verticalAlignment = Alignment.CenterVertically) {
+      Text(
+        text = "$$formattedAmount",
+        fontSize = 22.sp,
+        fontWeight = if (isActive) FontWeight.Bold else FontWeight.Light,
+        letterSpacing = 1.1.sp,
+      )
+      if (isActive) {
+        BlinkingCursor()
+      }
+    }
   }
+}
+
+@Composable
+private fun BlinkingCursor() {
+  val infiniteTransition = rememberInfiniteTransition(label = "cursor")
+  val alpha by infiniteTransition.animateFloat(
+    initialValue = 1f,
+    targetValue = 0f,
+    animationSpec = infiniteRepeatable(
+      animation = tween(500),
+      repeatMode = RepeatMode.Reverse,
+    ),
+    label = "cursorAlpha",
+  )
+
+  Box(
+    modifier = Modifier
+      .padding(start = 2.dp)
+      .width(2.dp)
+      .height(24.dp)
+      .alpha(alpha)
+      .background(MaterialTheme.colorScheme.primary),
+  )
 }
 
 @Preview(showBackground = true)
@@ -86,7 +123,7 @@ fun CurrencyRowPreview() {
   ExchangeRateCalculatorAppTheme {
     CurrencyRow(
       currency = CurrencyUtils.getCurrency("MXN")!!,
-      amount = "184,065.59",
+      amount = "184065.59",
       onRowClick = {},
       onCurrencyClick = {},
       isCurrencySelectable = true,

@@ -83,7 +83,7 @@ class MainViewModel @Inject constructor(
       _uiState.value =
         currentState.copy(
           amount1 = amount,
-          amount2 = newAmount2.toPlainString(),
+          amount2 = newAmount2.setScale(2, RoundingMode.HALF_UP).stripTrailingZeros().toPlainString(),
         )
     }
   }
@@ -104,7 +104,7 @@ class MainViewModel @Inject constructor(
 
       _uiState.value =
         currentState.copy(
-          amount1 = newAmount1.toPlainString(),
+          amount1 = newAmount1.setScale(2, RoundingMode.HALF_UP).stripTrailingZeros().toPlainString(),
           amount2 = amount,
         )
     }
