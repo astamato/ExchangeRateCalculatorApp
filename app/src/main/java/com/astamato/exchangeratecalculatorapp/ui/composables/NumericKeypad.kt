@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,15 +23,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.LineHeightStyle.Alignment.Companion.Top
-import androidx.compose.ui.text.style.LineHeightStyle.Mode.Companion.Tight
 import androidx.compose.ui.text.style.LineHeightStyle.Trim.Companion.Both
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -63,11 +61,11 @@ fun NumericKeypad(
   LazyVerticalGrid(
     modifier = modifier
       .fillMaxWidth()
-      .background(color = Color(0xFF535353))
-      .padding(horizontal = 4.dp, vertical = 4.dp),
+      .background(color = Color(0xFFDEDEDE))
+      .padding(horizontal = 6.dp, vertical = 6.dp),
     columns = GridCells.Fixed(3),
-    horizontalArrangement = Arrangement.spacedBy(4.dp),
-    verticalArrangement = Arrangement.spacedBy(4.dp),
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+    verticalArrangement = Arrangement.spacedBy(8.dp),
   ) {
     items(keypadKeys) { key ->
       KeypadButton(
@@ -75,6 +73,10 @@ fun NumericKeypad(
         onClick = { onKeyPress(key.number) },
       )
     }
+    item(span = { GridItemSpan(3) }) {
+      Box(modifier = Modifier.height(46.dp))
+    }
+
   }
 }
 
@@ -97,7 +99,7 @@ private fun KeypadButton(
     when (key.number) {
       "<" -> {
         Image(
-          painter = painterResource(id = R.drawable.symbol),
+          painter = painterResource(id = R.drawable.keyboard_backspace),
           contentDescription = "Backspace",
           modifier = Modifier.size(28.dp),
         )
@@ -111,7 +113,7 @@ private fun KeypadButton(
                 lineHeightStyle = LineHeightStyle(
                   alignment = LineHeightStyle.Alignment.Center,
                   trim = Both,
-                  )
+                )
               )
             ),
             text = key.number,
@@ -125,9 +127,10 @@ private fun KeypadButton(
                   lineHeightStyle = LineHeightStyle(
                     alignment = Top,
                     trim = Both,
-                  )
+                  ),
                 )
               ),
+              letterSpacing = 2.sp,
               text = letters,
               fontSize = 10.sp,
               fontWeight = FontWeight.Bold,
