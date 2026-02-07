@@ -6,23 +6,30 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.text.style.LineHeightStyle.Alignment.Companion.Top
+import androidx.compose.ui.text.style.LineHeightStyle.Mode.Companion.Tight
+import androidx.compose.ui.text.style.LineHeightStyle.Trim.Companion.Both
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -56,7 +63,7 @@ fun NumericKeypad(
   LazyVerticalGrid(
     modifier = modifier
       .fillMaxWidth()
-      .background(MaterialTheme.colorScheme.surfaceVariant)
+      .background(color = Color(0xFF535353))
       .padding(horizontal = 4.dp, vertical = 4.dp),
     columns = GridCells.Fixed(3),
     horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -81,8 +88,9 @@ private fun KeypadButton(
 
   Box(
     modifier = modifier
+      .height(46.dp)
       .clip(RoundedCornerShape(5.dp))
-      .background(MaterialTheme.colorScheme.onSurfaceVariant)
+      .background(color = Color(0xFFFCFCFE))
       .clickable(onClick = onClick),
     contentAlignment = Alignment.Center,
   ) {
@@ -92,26 +100,37 @@ private fun KeypadButton(
           painter = painterResource(id = R.drawable.symbol),
           contentDescription = "Backspace",
           modifier = Modifier.size(28.dp),
-          colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
         )
       }
 
       else -> {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
           Text(
+            style = LocalTextStyle.current.merge(
+              TextStyle(
+                lineHeightStyle = LineHeightStyle(
+                  alignment = LineHeightStyle.Alignment.Center,
+                  trim = Both,
+                  )
+              )
+            ),
             text = key.number,
             fontSize = 25.sp,
-            fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
           )
           if (letters != null) {
             Text(
+              style = LocalTextStyle.current.merge(
+                TextStyle(
+                  lineHeightStyle = LineHeightStyle(
+                    alignment = Top,
+                    trim = Both,
+                  )
+                )
+              ),
               text = letters,
               fontSize = 10.sp,
-              fontWeight = FontWeight.Normal,
-              color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-              textAlign = TextAlign.Center,
-              letterSpacing = 1.sp,
+              fontWeight = FontWeight.Bold,
             )
           }
         }
