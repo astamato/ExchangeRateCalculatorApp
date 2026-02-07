@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.astamato.exchangeratecalculatorapp.R
 import com.astamato.exchangeratecalculatorapp.ui.theme.ExchangeRateCalculatorAppTheme
 import com.astamato.exchangeratecalculatorapp.ui.util.Currency
 import com.astamato.exchangeratecalculatorapp.ui.util.CurrencyUtils
@@ -53,15 +52,12 @@ fun CurrencyRow(
       maximumFractionDigits = 2
     }
   val formattedAmount = amount.toBigDecimalOrNull()?.let { numberFormat.format(it) } ?: amount
-  val backgroundColor = if (isActive) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) else Color.Transparent
 
   Row(
-    modifier =
-      modifier
-        .fillMaxWidth()
-        .background(backgroundColor)
-        .clickable(onClick = onRowClick)
-        .padding(vertical = 16.dp, horizontal = 8.dp),
+    modifier = modifier
+      .fillMaxWidth()
+      .clickable(onClick = onRowClick)
+      .padding(vertical = 16.dp, horizontal = 8.dp),
     verticalAlignment = Alignment.CenterVertically,
   ) {
     Row(
@@ -71,21 +67,24 @@ fun CurrencyRow(
       Image(
         painter = painterResource(id = currency.flag),
         contentDescription = currency.name,
-        modifier = Modifier.size(24.dp),
+        modifier = Modifier.size(16.dp),
       )
       Spacer(modifier = Modifier.padding(start = 16.dp))
-      Text(text = currency.code, fontWeight = FontWeight.Bold)
+      Text(text = currency.code, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+      Spacer(modifier = Modifier.padding(start = 8.dp))
       if (isCurrencySelectable) {
-        Icon(Icons.Default.ArrowDropDown, contentDescription = "Select currency")
+        Icon(
+          painter = painterResource(id = R.drawable.chevron_button),
+          contentDescription = "Select currency",
+        )
       }
     }
     Spacer(modifier = Modifier.weight(1f))
     Row(verticalAlignment = Alignment.CenterVertically) {
       Text(
         text = "$$formattedAmount",
-        fontSize = 22.sp,
+        fontSize = 16.sp,
         fontWeight = if (isActive) FontWeight.Bold else FontWeight.Light,
-        letterSpacing = 1.1.sp,
       )
       if (isActive) {
         BlinkingCursor()
