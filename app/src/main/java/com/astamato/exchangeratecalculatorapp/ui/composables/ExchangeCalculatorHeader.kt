@@ -8,9 +8,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.astamato.exchangeratecalculatorapp.R
 import com.astamato.exchangeratecalculatorapp.ui.theme.ExchangeRateCalculatorAppTheme
 import java.text.NumberFormat
 import java.util.Locale
@@ -23,13 +25,13 @@ fun ExchangeCalculatorHeader(
 ) {
   Column(modifier = modifier.padding(horizontal = 16.dp)) {
     Text(
-      text = "Exchange calculator",
+      text = stringResource(id = R.string.exchange_calculator_title),
       style = MaterialTheme.typography.headlineLarge,
       fontWeight = FontWeight.Bold,
     )
     Spacer(modifier = Modifier.height(8.dp))
     Text(
-      text = "1 USDc = $exchangeRate $selectedCurrency",
+      text = stringResource(id = R.string.exchange_rate_label, exchangeRate, selectedCurrency),
       style = MaterialTheme.typography.bodyLarge,
       fontWeight = FontWeight.SemiBold,
       color = MaterialTheme.colorScheme.primary,

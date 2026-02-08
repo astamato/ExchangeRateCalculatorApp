@@ -103,7 +103,7 @@ fun CurrencyRow(
     ) {
       Image(
         painter = painterResource(id = currency.flag),
-        contentDescription = currency.name,
+        contentDescription = currency.code,
         modifier = Modifier.size(16.dp),
       )
       Spacer(modifier = Modifier.padding(start = 16.dp))

@@ -46,7 +46,7 @@ private fun CurrencyFlagPreview() {
     ExchangeRateCalculatorAppTheme {
       CurrencyFlag(
         flagResId = currency.flag,
-        contentDescription = currency.name,
+        contentDescription = currency.code,
       )
     }
   }

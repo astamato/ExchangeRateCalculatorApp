@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -26,7 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.astamato.exchangeratecalculatorapp.R
@@ -42,7 +44,7 @@ fun ChooseCurrencySheet(
   modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier = modifier
+    modifier = modifier.padding(vertical = 16.dp)
   ) {
     Row(
       modifier = Modifier.fillMaxWidth(),
@@ -50,18 +52,19 @@ fun ChooseCurrencySheet(
       verticalAlignment = Alignment.CenterVertically,
     ) {
       Text(
-        text = "Choose currency",
-        fontWeight = Bold,
+        text = stringResource(id = R.string.choose_currency_title),
         style = MaterialTheme.typography.titleLarge,
         modifier = Modifier.padding(horizontal = 16.dp)
       )
       IconButton(onClick = onClose) {
         Icon(
           painter = painterResource(id = R.drawable.close_button),
-          contentDescription = "Close button",
+          contentDescription = stringResource(id = R.string.close_button_description),
         )
       }
     }
+    Spacer(modifier = Modifier.height(16.dp))
+
     Card(
       modifier = Modifier.padding(16.dp),
       shape = RoundedCornerShape(16.dp),
@@ -80,10 +83,10 @@ fun ChooseCurrencySheet(
           ) {
             CurrencyFlag(
               flagResId = currency.flag,
-              contentDescription = currency.name,
+              contentDescription = currency.code,
             )
             Spacer(modifier = Modifier.padding(start = 16.dp))
-            Text(text = currency.name, modifier = Modifier.weight(1f))
+            Text(text = currency.code, modifier = Modifier.weight(1f), fontWeight = FontWeight.SemiBold)
             if (currencyCode == selectedCurrency) {
               Box(
                 modifier = Modifier
@@ -94,7 +97,7 @@ fun ChooseCurrencySheet(
               ) {
                 Image(
                   painter = painterResource(id = R.drawable.tick_button),
-                  contentDescription = "Selected",
+                  contentDescription = stringResource(id = R.string.selected_currency_description),
                   modifier = Modifier.size(12.dp),
                   colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onPrimary),
                 )
@@ -118,7 +121,7 @@ fun ChooseCurrencySheet(
 fun ChooseCurrencySheetPreview() {
   ExchangeRateCalculatorAppTheme {
     ChooseCurrencySheet(
-      availableCurrencies = listOf("USDc", "MXN", "EURc", "COP"),
+      availableCurrencies = CurrencyUtils.getAvailableCurrencyCodes().filter { it != "USDc" },
       selectedCurrency = "MXN",
       onCurrencySelected = {},
       onClose = {},
