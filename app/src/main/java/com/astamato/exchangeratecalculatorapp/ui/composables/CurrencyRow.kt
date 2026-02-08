@@ -33,11 +33,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -55,6 +55,7 @@ private class CurrencyVisualTransformation : VisualTransformation {
     val transformedText = AnnotatedString("$${text.text}")
     val offsetMapping = object : OffsetMapping {
       override fun originalToTransformed(offset: Int): Int = offset + 1
+
       override fun transformedToOriginal(offset: Int): Int = maxOf(0, offset - 1)
     }
     return TransformedText(transformedText, offsetMapping)

@@ -1,6 +1,5 @@
 package com.astamato.exchangeratecalculatorapp.ui.composables
 
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -114,41 +113,6 @@ fun ChooseCurrencySheet(
           }
         }
       }
-    }
-  }
-}
-
-@Composable
-private fun CurrencyFlag(
-  @DrawableRes flagResId: Int,
-  contentDescription: String?,
-  modifier: Modifier = Modifier,
-) {
-  Box(
-    modifier = modifier
-      .size(40.dp)
-      .clip(RoundedCornerShape(10.dp))
-      .background(Color(0xFFF4F4F4)),
-    contentAlignment = Alignment.Center,
-  ) {
-    Image(
-      painter = painterResource(id = flagResId),
-      contentDescription = contentDescription,
-      modifier = Modifier.size(28.dp),
-    )
-  }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun CurrencyFlagPreview() {
-  val currency = CurrencyUtils.getCurrency("MXN")
-  if (currency != null) {
-    ExchangeRateCalculatorAppTheme {
-      CurrencyFlag(
-        flagResId = currency.flag,
-        contentDescription = currency.name,
-      )
     }
   }
 }
