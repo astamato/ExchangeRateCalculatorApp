@@ -32,7 +32,7 @@ class MainViewModel @Inject constructor(
         val initialTicker = tickers.find { it.book.endsWith(selectedCurrency.lowercase()) }
         val exchangeRate = initialTicker?.ask?.toBigDecimal() ?: BigDecimal.ONE
         val amount1 = "1"
-        val amount2 = exchangeRate.toPlainString()
+        val amount2 = exchangeRate.setScale(2, RoundingMode.HALF_UP).stripTrailingZeros().toPlainString()
 
         _uiState.value =
           ExchangeRateUiState.Success(
