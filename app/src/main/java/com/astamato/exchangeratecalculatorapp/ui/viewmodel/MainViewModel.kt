@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.astamato.exchangeratecalculatorapp.data.Ticker
 import com.astamato.exchangeratecalculatorapp.repository.ExchangeRateRepository
+import com.astamato.exchangeratecalculatorapp.util.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,6 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
   private val repository: ExchangeRateRepository,
+  private val logger: Logger,
 ) : ViewModel() {
   private val _uiState = MutableStateFlow<ExchangeRateUiState>(ExchangeRateUiState.Loading)
   val uiState: StateFlow<ExchangeRateUiState> = _uiState
@@ -32,7 +34,7 @@ class MainViewModel @Inject constructor(
         val initialTicker = tickers.find { it.book.endsWith(selectedCurrency.lowercase()) }
         val exchangeRate = initialTicker?.ask?.toBigDecimal() ?: BigDecimal.ONE
         val amount1 = "1"
-        val amount2 = exchangeRate.setScale(2, RoundingMode.HALF_UP).stripTrailingZeros().toPlainString()
+        val amount2 = exchangeRate.setScale(2, RoundingMode.HALF_UP).toPlainString()
 
         _uiState.value =
           ExchangeRateUiState.Success(
@@ -43,6 +45,7 @@ class MainViewModel @Inject constructor(
             amount2 = amount2,
           )
       } catch (e: Exception) {
+        logger.e("MainViewModel", "Failed to fetch initial data", e)
         _uiState.value = ExchangeRateUiState.Error("Failed to fetch data")
       }
     }
@@ -65,7 +68,7 @@ class MainViewModel @Inject constructor(
       _uiState.value =
         currentState.copy(
           amount1 = amount,
-          amount2 = newAmount2.setScale(2, RoundingMode.HALF_UP).stripTrailingZeros().toPlainString(),
+          amount2 = newAmount2.setScale(2, RoundingMode.HALF_UP).toPlainString(),
         )
     }
   }
@@ -86,7 +89,7 @@ class MainViewModel @Inject constructor(
 
       _uiState.value =
         currentState.copy(
-          amount1 = newAmount1.setScale(2, RoundingMode.HALF_UP).stripTrailingZeros().toPlainString(),
+          amount1 = newAmount1.setScale(2, RoundingMode.HALF_UP).toPlainString(),
           amount2 = amount,
         )
     }
