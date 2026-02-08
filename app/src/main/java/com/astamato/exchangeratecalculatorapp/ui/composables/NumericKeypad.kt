@@ -57,7 +57,6 @@ fun NumericKeypad(
   onKeyPress: (String) -> Unit,
   modifier: Modifier = Modifier,
 ) {
-
   LazyVerticalGrid(
     modifier = modifier
       .fillMaxWidth()
@@ -76,7 +75,6 @@ fun NumericKeypad(
     item(span = { GridItemSpan(3) }) {
       Box(modifier = Modifier.height(46.dp))
     }
-
   }
 }
 

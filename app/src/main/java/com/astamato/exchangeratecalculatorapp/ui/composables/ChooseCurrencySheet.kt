@@ -24,9 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Gray
-import androidx.compose.ui.graphics.Color.Companion.Red
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,7 +51,8 @@ fun ChooseCurrencySheet(
       verticalAlignment = Alignment.CenterVertically,
     ) {
       Text(
-        text = "Choose currency", style = MaterialTheme.typography.titleLarge,
+        text = "Choose currency",
+        style = MaterialTheme.typography.titleLarge,
         modifier = Modifier.padding(horizontal = 16.dp)
       )
       IconButton(onClick = onClose) {

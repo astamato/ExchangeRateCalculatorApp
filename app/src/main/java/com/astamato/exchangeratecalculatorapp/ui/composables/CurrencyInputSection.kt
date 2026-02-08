@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -42,7 +41,7 @@ fun CurrencyInputSection(
 
   Box(
     contentAlignment = Alignment.Center,
-    modifier = modifier.padding(horizontal = 16.dp),
+    modifier = Modifier.padding(horizontal = 16.dp)
   ) {
     Column {
       CurrencyRow(
@@ -53,7 +52,7 @@ fun CurrencyInputSection(
         isCurrencySelectable = !state.isUsdcPrimary,
         isActive = state.activeField == 1,
       )
-      Spacer(modifier = Modifier.height(16.dp))
+      Spacer(modifier = Modifier.padding(horizontal = 16.dp).height(16.dp))
       CurrencyRow(
         currency = secondaryCurrency,
         amount = state.amount2,
@@ -64,20 +63,27 @@ fun CurrencyInputSection(
       )
     }
     Box(
-      contentAlignment = Alignment.Center,
-      modifier =
-      Modifier
-        .size(24.dp)
+      modifier = Modifier
         .clip(CircleShape)
-        .background(MaterialTheme.colorScheme.primary)
-        .clickable(onClick = onSwapCurrencies),
+        .background(MaterialTheme.colorScheme.background)
+        .padding(4.dp)
     ) {
-      Icon(
-        painter = painterResource(id = R.drawable.swap_button),
-        contentDescription = "Swap currencies",
-        modifier = Modifier.size(16.dp),
-        tint = Color.White,
-      )
+      Box(
+        contentAlignment = Alignment.Center,
+        modifier =
+          Modifier
+            .size(24.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.primary)
+            .clickable(onClick = onSwapCurrencies),
+      ) {
+        Icon(
+          painter = painterResource(id = R.drawable.swap_button),
+          contentDescription = "Swap currencies",
+          modifier = Modifier.size(16.dp),
+          tint = Color.White,
+        )
+      }
     }
   }
 }

@@ -1,6 +1,5 @@
 package com.astamato.exchangeratecalculatorapp.ui.composables
 
-import android.content.res.Resources
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -9,7 +8,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,7 +25,8 @@ fun ExchangeCalculatorHeader(
   Column(modifier = modifier.padding(horizontal = 16.dp)) {
     Spacer(modifier = Modifier.height(16.dp))
     Text(
-      text = "Exchange calculator", style = MaterialTheme.typography.headlineLarge,
+      text = "Exchange calculator",
+      style = MaterialTheme.typography.headlineLarge,
       fontSize = 30.sp,
       fontWeight = FontWeight.Bold
     )
