@@ -41,20 +41,22 @@ fun CurrencyExchangeScreen(
   StatelessCurrencyExchangeScreen(
     modifier = modifier,
     uiState = uiState,
-    onKeypadPress = viewModel::onKeypadPress,
     onCurrencySelected = viewModel::onCurrencySelected,
     onSwapCurrencies = viewModel::onSwapCurrencies,
     onActiveFieldChange = viewModel::onActiveFieldChange,
+    onAmount1Change = viewModel::onPrimaryAmountChange,
+    onAmount2Change = viewModel::onSecondaryAmountChange,
   )
 }
 
 @Composable
 fun StatelessCurrencyExchangeScreen(
   uiState: ExchangeRateUiState,
-  onKeypadPress: (String) -> Unit,
   onCurrencySelected: (String) -> Unit,
   onSwapCurrencies: () -> Unit,
   onActiveFieldChange: (Int) -> Unit,
+  onAmount1Change: (String) -> Unit,
+  onAmount2Change: (String) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Scaffold(
@@ -85,10 +87,11 @@ fun StatelessCurrencyExchangeScreen(
         is ExchangeRateUiState.Success -> {
           CurrencyExchangeContent(
             state = uiState,
-            onKeypadPress = onKeypadPress,
             onCurrencySelected = onCurrencySelected,
             onSwapCurrencies = onSwapCurrencies,
             onActiveFieldChange = onActiveFieldChange,
+            onAmount1Change = onAmount1Change,
+            onAmount2Change = onAmount2Change,
           )
         }
 
@@ -110,10 +113,11 @@ fun StatelessCurrencyExchangeScreen(
 @Composable
 fun CurrencyExchangeContent(
   state: ExchangeRateUiState.Success,
-  onKeypadPress: (String) -> Unit,
   onCurrencySelected: (String) -> Unit,
   onSwapCurrencies: () -> Unit,
   onActiveFieldChange: (Int) -> Unit,
+  onAmount1Change: (String) -> Unit,
+  onAmount2Change: (String) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   var showBottomSheet by remember { mutableStateOf(false) }
@@ -143,10 +147,9 @@ fun CurrencyExchangeContent(
       onSwapCurrencies = onSwapCurrencies,
       onActiveFieldChange = onActiveFieldChange,
       onCurrencyClick = { showBottomSheet = it },
+      onAmount1Change = onAmount1Change,
+      onAmount2Change = onAmount2Change,
     )
-    Spacer(modifier = Modifier.weight(1f))
-
-    NumericKeypad(onKeyPress = onKeypadPress)
 
     if (showBottomSheet) {
       ModalBottomSheet(
@@ -176,16 +179,17 @@ fun StatelessCurrencyExchangeScreenSuccessPreview() {
       tickers = tickers,
       availableCurrencies = listOf("USDc", "MXN", "EURc", "COP"),
       selectedCurrency = "MXN",
-      amount1 = "9,999",
-      amount2 = "184,065.59",
+      amount1 = "9999",
+      amount2 = "184065.59",
     )
   ExchangeRateCalculatorAppTheme {
     StatelessCurrencyExchangeScreen(
       uiState = uiState,
-      onKeypadPress = {},
       onCurrencySelected = {},
       onSwapCurrencies = {},
       onActiveFieldChange = {},
+      onAmount1Change = {},
+      onAmount2Change = {},
     )
   }
 }
@@ -196,10 +200,11 @@ fun StatelessCurrencyExchangeScreenLoadingPreview() {
   ExchangeRateCalculatorAppTheme {
     StatelessCurrencyExchangeScreen(
       uiState = ExchangeRateUiState.Loading,
-      onKeypadPress = {},
       onCurrencySelected = {},
       onSwapCurrencies = {},
       onActiveFieldChange = {},
+      onAmount1Change = {},
+      onAmount2Change = {},
     )
   }
 }
@@ -210,10 +215,11 @@ fun StatelessCurrencyExchangeScreenErrorPreview() {
   ExchangeRateCalculatorAppTheme {
     StatelessCurrencyExchangeScreen(
       uiState = ExchangeRateUiState.Error("Failed to fetch data"),
-      onKeypadPress = {},
       onCurrencySelected = {},
       onSwapCurrencies = {},
       onActiveFieldChange = {},
+      onAmount1Change = {},
+      onAmount2Change = {},
     )
   }
 }

@@ -48,25 +48,7 @@ class MainViewModel @Inject constructor(
     }
   }
 
-  fun onKeypadPress(key: String) {
-    val currentState = _uiState.value
-    if (currentState is ExchangeRateUiState.Success) {
-      val currentAmount = if (currentState.activeField == 1) currentState.amount1 else currentState.amount2
-      val newAmount =
-        when (key) {
-          "<" -> currentAmount.dropLast(1).ifEmpty { "0" }
-          "." -> if (!currentAmount.contains(".")) "$currentAmount." else currentAmount
-          else -> if (currentAmount == "0") key else currentAmount + key
-        }
-      if (currentState.activeField == 1) {
-        onPrimaryAmountChange(newAmount)
-      } else {
-        onSecondaryAmountChange(newAmount)
-      }
-    }
-  }
-
-  private fun onPrimaryAmountChange(amount: String) {
+  fun onPrimaryAmountChange(amount: String) {
     val currentState = _uiState.value
     if (currentState is ExchangeRateUiState.Success) {
       val newAmount = amount.toBigDecimalOrNull() ?: BigDecimal.ZERO
@@ -88,7 +70,7 @@ class MainViewModel @Inject constructor(
     }
   }
 
-  private fun onSecondaryAmountChange(amount: String) {
+  fun onSecondaryAmountChange(amount: String) {
     val currentState = _uiState.value
     if (currentState is ExchangeRateUiState.Success) {
       val newAmount = amount.toBigDecimalOrNull() ?: BigDecimal.ZERO

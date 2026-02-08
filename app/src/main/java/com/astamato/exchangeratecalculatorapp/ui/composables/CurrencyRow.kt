@@ -1,34 +1,41 @@
 package com.astamato.exchangeratecalculatorapp.ui.composables
 
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,29 +43,40 @@ import com.astamato.exchangeratecalculatorapp.R
 import com.astamato.exchangeratecalculatorapp.ui.theme.ExchangeRateCalculatorAppTheme
 import com.astamato.exchangeratecalculatorapp.ui.util.Currency
 import com.astamato.exchangeratecalculatorapp.ui.util.CurrencyUtils
-import java.text.NumberFormat
-import java.util.Locale
+
+private const val MAX_CHARACTERS = 9
 
 @Composable
 fun CurrencyRow(
   currency: Currency,
   amount: String,
-  onRowClick: () -> Unit,
+  onAmountChange: (String) -> Unit,
   onCurrencyClick: () -> Unit,
+  onFocusChanged: (Boolean) -> Unit,
   isCurrencySelectable: Boolean,
   isActive: Boolean,
   modifier: Modifier = Modifier,
 ) {
-  val numberFormat =
-    NumberFormat.getNumberInstance(Locale.US).apply {
-      maximumFractionDigits = 2
+  val focusRequester = remember { FocusRequester() }
+  var textFieldValue by remember(amount) {
+    mutableStateOf(TextFieldValue(text = amount, selection = TextRange(amount.length)))
+  }
+
+  LaunchedEffect(amount) {
+    if (textFieldValue.text != amount) {
+      textFieldValue = TextFieldValue(text = amount, selection = TextRange(amount.length))
     }
-  val formattedAmount = amount.toBigDecimalOrNull()?.let { numberFormat.format(it) } ?: amount
+  }
+
+  LaunchedEffect(isActive) {
+    if (isActive) {
+      focusRequester.requestFocus()
+    }
+  }
 
   Row(
     modifier = modifier
       .fillMaxWidth()
-      .clickable(onClick = onRowClick)
       .clip(RoundedCornerShape(16.dp))
       .background(Color.White)
       .padding(vertical = 16.dp, horizontal = 16.dp),
@@ -86,38 +104,57 @@ fun CurrencyRow(
     Spacer(modifier = Modifier.weight(1f))
     Row(verticalAlignment = Alignment.CenterVertically) {
       Text(
-        text = "$$formattedAmount",
+        text = "$",
         fontSize = 16.sp,
         fontWeight = if (isActive) FontWeight.Bold else FontWeight.Light,
       )
-      if (isActive) {
-        BlinkingCursor()
-      }
+      BasicTextField(
+        value = textFieldValue,
+        onValueChange = { newValue ->
+          val filtered = newValue.text
+            .filter { it.isDigit() || it == '.' }
+            .let { text ->
+              // Remove leading zeros unless it's "0" or "0."
+              when {
+                text.isEmpty() -> ""
+                text == "0" || text.startsWith("0.") -> text
+                text.startsWith("0") -> text.trimStart('0').ifEmpty { "0" }
+                else -> text
+              }
+            }
+            .let { text ->
+              // Limit decimal places to 2
+              val dotIndex = text.indexOf('.')
+              if (dotIndex >= 0 && text.length > dotIndex + 3) {
+                text.substring(0, dotIndex + 3)
+              } else {
+                text
+              }
+            }
+
+          if (filtered.count { it == '.' } <= 1 && filtered.length <= MAX_CHARACTERS) {
+            textFieldValue = newValue.copy(text = filtered, selection = TextRange(filtered.length))
+            onAmountChange(filtered)
+          }
+        },
+        modifier = Modifier
+          .focusRequester(focusRequester)
+          .onFocusChanged { focusState ->
+            onFocusChanged(focusState.isFocused)
+          }
+          .widthIn(min = 50.dp, max = 150.dp),
+        textStyle = TextStyle(
+          fontSize = 16.sp,
+          fontWeight = if (isActive) FontWeight.Bold else FontWeight.Light,
+          color = MaterialTheme.colorScheme.onSurface,
+          textAlign = TextAlign.End,
+        ),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+        singleLine = true,
+        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+      )
     }
   }
-}
-
-@Composable
-private fun BlinkingCursor() {
-  val infiniteTransition = rememberInfiniteTransition(label = "cursor")
-  val alpha by infiniteTransition.animateFloat(
-    initialValue = 1f,
-    targetValue = 0f,
-    animationSpec = infiniteRepeatable(
-      animation = tween(500),
-      repeatMode = RepeatMode.Reverse,
-    ),
-    label = "cursorAlpha",
-  )
-
-  Box(
-    modifier = Modifier
-      .padding(start = 2.dp)
-      .width(2.dp)
-      .height(24.dp)
-      .alpha(alpha)
-      .background(MaterialTheme.colorScheme.primary),
-  )
 }
 
 @Preview(showBackground = true)
@@ -127,8 +164,9 @@ fun CurrencyRowPreview() {
     CurrencyRow(
       currency = CurrencyUtils.getCurrency("MXN")!!,
       amount = "184065.59",
-      onRowClick = {},
+      onAmountChange = {},
       onCurrencyClick = {},
+      onFocusChanged = {},
       isCurrencySelectable = true,
       isActive = true,
     )

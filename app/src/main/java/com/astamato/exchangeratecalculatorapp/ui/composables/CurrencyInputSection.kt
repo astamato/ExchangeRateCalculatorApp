@@ -30,6 +30,8 @@ fun CurrencyInputSection(
   onSwapCurrencies: () -> Unit,
   onActiveFieldChange: (Int) -> Unit,
   onCurrencyClick: (Boolean) -> Unit,
+  onAmount1Change: (String) -> Unit,
+  onAmount2Change: (String) -> Unit,
   modifier: Modifier = Modifier,
 ) {
   val (primaryCurrency, secondaryCurrency) =
@@ -41,14 +43,15 @@ fun CurrencyInputSection(
 
   Box(
     contentAlignment = Alignment.Center,
-    modifier = Modifier.padding(horizontal = 16.dp)
+    modifier = modifier.padding(horizontal = 16.dp)
   ) {
     Column {
       CurrencyRow(
         currency = primaryCurrency,
         amount = state.amount1,
-        onRowClick = { onActiveFieldChange(1) },
+        onAmountChange = onAmount1Change,
         onCurrencyClick = { onCurrencyClick(!state.isUsdcPrimary) },
+        onFocusChanged = { if (it) onActiveFieldChange(1) },
         isCurrencySelectable = !state.isUsdcPrimary,
         isActive = state.activeField == 1,
       )
@@ -56,8 +59,9 @@ fun CurrencyInputSection(
       CurrencyRow(
         currency = secondaryCurrency,
         amount = state.amount2,
-        onRowClick = { onActiveFieldChange(2) },
+        onAmountChange = onAmount2Change,
         onCurrencyClick = { onCurrencyClick(state.isUsdcPrimary) },
+        onFocusChanged = { if (it) onActiveFieldChange(2) },
         isCurrencySelectable = state.isUsdcPrimary,
         isActive = state.activeField == 2,
       )
@@ -97,8 +101,8 @@ fun CurrencyInputSectionPreview() {
       tickers = tickers,
       availableCurrencies = listOf("USDc", "MXN", "EURc", "COP"),
       selectedCurrency = "MXN",
-      amount1 = "9,999",
-      amount2 = "184,065.59",
+      amount1 = "9999",
+      amount2 = "184065.59",
     )
   ExchangeRateCalculatorAppTheme {
     CurrencyInputSection(
@@ -106,6 +110,8 @@ fun CurrencyInputSectionPreview() {
       onSwapCurrencies = {},
       onActiveFieldChange = {},
       onCurrencyClick = {},
+      onAmount1Change = {},
+      onAmount2Change = {},
     )
   }
 }

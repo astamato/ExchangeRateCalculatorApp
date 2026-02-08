@@ -1,5 +1,6 @@
 package com.astamato.exchangeratecalculatorapp.ui.composables
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,7 +15,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -65,7 +68,9 @@ fun ChooseCurrencySheet(
     Spacer(modifier = Modifier.height(16.dp))
 
     Card(
-      modifier = Modifier.padding(horizontal = 16.dp)
+      modifier = Modifier.padding(16.dp),
+      shape = RoundedCornerShape(16.dp),
+      colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
       availableCurrencies.forEach { currencyCode ->
         val currency = CurrencyUtils.getCurrency(currencyCode)
@@ -74,13 +79,13 @@ fun ChooseCurrencySheet(
             modifier = Modifier
               .fillMaxWidth()
               .clickable { onCurrencySelected(currencyCode) }
-              .padding(vertical = 12.dp),
+              .padding(vertical = 12.dp)
+              .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
           ) {
-            Image(
-              painter = painterResource(id = currency.flag),
+            CurrencyFlag(
+              flagResId = currency.flag,
               contentDescription = currency.name,
-              modifier = Modifier.size(24.dp),
             )
             Spacer(modifier = Modifier.padding(start = 16.dp))
             Text(text = currency.name, modifier = Modifier.weight(1f))
@@ -109,6 +114,41 @@ fun ChooseCurrencySheet(
           }
         }
       }
+    }
+  }
+}
+
+@Composable
+private fun CurrencyFlag(
+  @DrawableRes flagResId: Int,
+  contentDescription: String?,
+  modifier: Modifier = Modifier,
+) {
+  Box(
+    modifier = modifier
+      .size(40.dp)
+      .clip(RoundedCornerShape(10.dp))
+      .background(Color(0xFFF4F4F4)),
+    contentAlignment = Alignment.Center,
+  ) {
+    Image(
+      painter = painterResource(id = flagResId),
+      contentDescription = contentDescription,
+      modifier = Modifier.size(28.dp),
+    )
+  }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun CurrencyFlagPreview() {
+  val currency = CurrencyUtils.getCurrency("MXN")
+  if (currency != null) {
+    ExchangeRateCalculatorAppTheme {
+      CurrencyFlag(
+        flagResId = currency.flag,
+        contentDescription = currency.name,
+      )
     }
   }
 }
