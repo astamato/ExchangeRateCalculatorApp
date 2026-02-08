@@ -9,9 +9,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.astamato.exchangeratecalculatorapp.ui.theme.ExchangeRateCalculatorAppTheme
 import java.text.NumberFormat
 import java.util.Locale
@@ -26,21 +25,19 @@ fun ExchangeCalculatorHeader(
     Text(
       text = "Exchange calculator",
       style = MaterialTheme.typography.headlineLarge,
-      fontSize = 30.sp,
-      fontWeight = FontWeight.Bold
+      fontWeight = FontWeight.Bold,
     )
     Spacer(modifier = Modifier.height(8.dp))
     Text(
       text = "1 USDc = $exchangeRate $selectedCurrency",
-      style = MaterialTheme.typography.bodyMedium,
-      fontSize = 16.sp,
+      style = MaterialTheme.typography.bodyLarge,
       fontWeight = FontWeight.SemiBold,
       color = MaterialTheme.colorScheme.primary,
     )
   }
 }
 
-@Preview(showBackground = true)
+@PreviewLightDark
 @Composable
 fun ExchangeCalculatorHeaderPreview() {
   val numberFormat =
