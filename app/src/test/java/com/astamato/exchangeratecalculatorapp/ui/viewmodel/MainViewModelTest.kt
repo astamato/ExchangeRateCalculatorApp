@@ -57,7 +57,7 @@ class MainViewModelTest {
         assertEquals(ExchangeRateUiState.Loading, awaitItem())
         val state = awaitItem()
         assert(state is ExchangeRateUiState.Success)
-        assertEquals("1000000.00", (state as ExchangeRateUiState.Success).amount2)
+        assertEquals("1000000.00", (state as ExchangeRateUiState.Success).amountSecondary)
       }
     }
 

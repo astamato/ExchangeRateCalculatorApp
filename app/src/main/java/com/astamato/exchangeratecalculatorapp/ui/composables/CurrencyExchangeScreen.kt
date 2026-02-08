@@ -29,6 +29,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.astamato.exchangeratecalculatorapp.R
 import com.astamato.exchangeratecalculatorapp.ui.theme.ExchangeRateCalculatorAppTheme
 import com.astamato.exchangeratecalculatorapp.ui.util.CurrencyUtils
+import com.astamato.exchangeratecalculatorapp.ui.viewmodel.ActiveField
 import com.astamato.exchangeratecalculatorapp.ui.viewmodel.ExchangeRateUiState
 import com.astamato.exchangeratecalculatorapp.ui.viewmodel.MainViewModel
 import java.math.BigDecimal
@@ -57,7 +58,7 @@ fun StatelessCurrencyExchangeScreen(
   uiState: ExchangeRateUiState,
   onCurrencySelected: (String) -> Unit,
   onSwapCurrencies: () -> Unit,
-  onActiveFieldChange: (Int) -> Unit,
+  onActiveFieldChange: (ActiveField) -> Unit,
   onAmount1Change: (String) -> Unit,
   onAmount2Change: (String) -> Unit,
   modifier: Modifier = Modifier,
@@ -118,7 +119,7 @@ fun CurrencyExchangeContent(
   state: ExchangeRateUiState.Success,
   onCurrencySelected: (String) -> Unit,
   onSwapCurrencies: () -> Unit,
-  onActiveFieldChange: (Int) -> Unit,
+  onActiveFieldChange: (ActiveField) -> Unit,
   onAmount1Change: (String) -> Unit,
   onAmount2Change: (String) -> Unit,
   modifier: Modifier = Modifier,
@@ -183,8 +184,8 @@ fun StatelessCurrencyExchangeScreenSuccessPreview() {
       tickers = tickers,
       availableCurrencies = CurrencyUtils.getAvailableCurrencyCodes(),
       selectedCurrency = "MXN",
-      amount1 = "9999",
-      amount2 = "184065.59",
+      amountPrimary = "9999",
+      amountSecondary = "184065.59",
     )
   ExchangeRateCalculatorAppTheme {
     StatelessCurrencyExchangeScreen(

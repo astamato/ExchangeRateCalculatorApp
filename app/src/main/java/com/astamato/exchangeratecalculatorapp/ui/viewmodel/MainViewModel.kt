@@ -2,7 +2,6 @@ package com.astamato.exchangeratecalculatorapp.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.astamato.exchangeratecalculatorapp.data.Ticker
 import com.astamato.exchangeratecalculatorapp.repository.ExchangeRateRepository
 import com.astamato.exchangeratecalculatorapp.util.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,8 +40,8 @@ class MainViewModel @Inject constructor(
             tickers = tickers,
             availableCurrencies = currencies,
             selectedCurrency = selectedCurrency,
-            amount1 = amount1,
-            amount2 = amount2,
+            amountPrimary = amount1,
+            amountSecondary = amount2,
           )
       } catch (e: Exception) {
         logger.e("MainViewModel", "Failed to fetch initial data", e)
@@ -67,8 +66,8 @@ class MainViewModel @Inject constructor(
 
       _uiState.value =
         currentState.copy(
-          amount1 = amount,
-          amount2 = newAmount2.setScale(2, RoundingMode.HALF_UP).toPlainString(),
+          amountPrimary = amount,
+          amountSecondary = newAmount2.setScale(2, RoundingMode.HALF_UP).toPlainString(),
         )
     }
   }
@@ -89,8 +88,8 @@ class MainViewModel @Inject constructor(
 
       _uiState.value =
         currentState.copy(
-          amount1 = newAmount1.setScale(2, RoundingMode.HALF_UP).toPlainString(),
-          amount2 = amount,
+          amountPrimary = newAmount1.setScale(2, RoundingMode.HALF_UP).toPlainString(),
+          amountSecondary = amount,
         )
     }
   }
@@ -110,13 +109,13 @@ class MainViewModel @Inject constructor(
       _uiState.value =
         currentState.copy(
           isUsdcPrimary = !currentState.isUsdcPrimary,
-          amount1 = currentState.amount2,
-          amount2 = currentState.amount1,
+          amountPrimary = currentState.amountSecondary,
+          amountSecondary = currentState.amountPrimary,
         )
     }
   }
 
-  fun onActiveFieldChange(field: Int) {
+  fun onActiveFieldChange(field: ActiveField) {
     val currentState = _uiState.value
     if (currentState is ExchangeRateUiState.Success) {
       _uiState.value = currentState.copy(activeField = field)
@@ -124,28 +123,10 @@ class MainViewModel @Inject constructor(
   }
 
   private fun recalculate(currentState: ExchangeRateUiState.Success) {
-    if (currentState.activeField == 1) {
-      onPrimaryAmountChange(currentState.amount1)
+    if (currentState.activeField == ActiveField.PRIMARY) {
+      onPrimaryAmountChange(currentState.amountPrimary)
     } else {
-      onSecondaryAmountChange(currentState.amount2)
+      onSecondaryAmountChange(currentState.amountSecondary)
     }
   }
-}
-
-sealed class ExchangeRateUiState {
-  object Loading : ExchangeRateUiState()
-
-  data class Success(
-    val tickers: List<Ticker>,
-    val availableCurrencies: List<String>,
-    val selectedCurrency: String,
-    val amount1: String = "1",
-    val amount2: String = "",
-    val isUsdcPrimary: Boolean = true,
-    val activeField: Int = 1,
-  ) : ExchangeRateUiState()
-
-  data class Error(
-    val message: String,
-  ) : ExchangeRateUiState()
 }

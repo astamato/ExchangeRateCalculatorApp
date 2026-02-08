@@ -22,13 +22,14 @@ import androidx.compose.ui.unit.dp
 import com.astamato.exchangeratecalculatorapp.R
 import com.astamato.exchangeratecalculatorapp.ui.theme.ExchangeRateCalculatorAppTheme
 import com.astamato.exchangeratecalculatorapp.ui.util.CurrencyUtils
+import com.astamato.exchangeratecalculatorapp.ui.viewmodel.ActiveField
 import com.astamato.exchangeratecalculatorapp.ui.viewmodel.ExchangeRateUiState
 
 @Composable
 fun CurrencyInputSection(
   state: ExchangeRateUiState.Success,
   onSwapCurrencies: () -> Unit,
-  onActiveFieldChange: (Int) -> Unit,
+  onActiveFieldChange: (ActiveField) -> Unit,
   onCurrencyClick: (Boolean) -> Unit,
   onAmount1Change: (String) -> Unit,
   onAmount2Change: (String) -> Unit,
@@ -48,22 +49,22 @@ fun CurrencyInputSection(
     Column {
       CurrencyRow(
         currency = primaryCurrency,
-        amount = state.amount1,
+        amount = state.amountPrimary,
         onAmountChange = onAmount1Change,
         onCurrencyClick = { onCurrencyClick(!state.isUsdcPrimary) },
-        onFocusChanged = { if (it) onActiveFieldChange(1) },
+        onFocusChanged = { if (it) onActiveFieldChange(ActiveField.PRIMARY) },
         isCurrencySelectable = !state.isUsdcPrimary,
-        isActive = state.activeField == 1,
+        isActive = state.activeField == ActiveField.PRIMARY,
       )
       Spacer(modifier = Modifier.padding(horizontal = 16.dp).height(16.dp))
       CurrencyRow(
         currency = secondaryCurrency,
-        amount = state.amount2,
+        amount = state.amountSecondary,
         onAmountChange = onAmount2Change,
         onCurrencyClick = { onCurrencyClick(state.isUsdcPrimary) },
-        onFocusChanged = { if (it) onActiveFieldChange(2) },
+        onFocusChanged = { if (it) onActiveFieldChange(ActiveField.SECONDARY) },
         isCurrencySelectable = state.isUsdcPrimary,
-        isActive = state.activeField == 2,
+        isActive = state.activeField == ActiveField.SECONDARY,
       )
     }
     Box(
@@ -101,8 +102,8 @@ fun CurrencyInputSectionPreview() {
       tickers = tickers,
       availableCurrencies = CurrencyUtils.getAvailableCurrencyCodes(),
       selectedCurrency = "MXN",
-      amount1 = "9999",
-      amount2 = "184065.59",
+      amountPrimary = "9999",
+      amountSecondary = "184065.59",
     )
   ExchangeRateCalculatorAppTheme {
     CurrencyInputSection(
