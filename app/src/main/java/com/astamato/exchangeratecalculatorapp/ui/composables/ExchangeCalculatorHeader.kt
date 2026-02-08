@@ -23,7 +23,6 @@ fun ExchangeCalculatorHeader(
   modifier: Modifier = Modifier,
 ) {
   Column(modifier = modifier.padding(horizontal = 16.dp)) {
-    Spacer(modifier = Modifier.height(16.dp))
     Text(
       text = "Exchange calculator",
       style = MaterialTheme.typography.headlineLarge,

@@ -134,13 +134,14 @@ fun CurrencyExchangeContent(
   Column(
     modifier = modifier.fillMaxSize(),
   ) {
+    Spacer(modifier = Modifier.height(24.dp))
     ExchangeCalculatorHeader(
       exchangeRate = formattedExchangeRate,
       selectedCurrency = state.selectedCurrency,
     )
     Spacer(
       Modifier
-        .height(30.dp)
+        .height(24.dp)
     )
     CurrencyInputSection(
       state = state,
