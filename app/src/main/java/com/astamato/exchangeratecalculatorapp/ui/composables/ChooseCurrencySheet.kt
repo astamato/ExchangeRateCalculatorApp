@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -43,9 +42,7 @@ fun ChooseCurrencySheet(
   onClose: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
-  Column(
-    modifier = modifier.padding(vertical = 16.dp)
-  ) {
+  Column(modifier = modifier) {
     Row(
       modifier = Modifier.fillMaxWidth(),
       horizontalArrangement = Arrangement.SpaceBetween,
@@ -53,7 +50,7 @@ fun ChooseCurrencySheet(
     ) {
       Text(
         text = stringResource(id = R.string.choose_currency_title),
-        style = MaterialTheme.typography.titleLarge,
+        style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold),
         modifier = Modifier.padding(horizontal = 16.dp)
       )
       IconButton(onClick = onClose) {
@@ -63,7 +60,6 @@ fun ChooseCurrencySheet(
         )
       }
     }
-    Spacer(modifier = Modifier.height(16.dp))
 
     Card(
       modifier = Modifier.padding(16.dp),
