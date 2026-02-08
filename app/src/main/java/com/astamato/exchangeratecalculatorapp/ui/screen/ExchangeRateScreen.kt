@@ -48,7 +48,7 @@ fun ExchangeRateScreen(
             }
           }, onCurrencySelected = { currency ->
             viewModel.onCurrencySelected(currency)
-          }, onSwap = { viewModel.onSwapCurrencies() }, onActiveFieldChange = { field -> viewModel.onActiveFieldChange(field) })
+          }, onActiveFieldChange = { field -> viewModel.onActiveFieldChange(field) })
         }
 
         is ExchangeRateUiState.Error -> {

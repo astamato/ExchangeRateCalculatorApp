@@ -28,7 +28,7 @@ The application follows the modern Android architecture guidelines and uses the 
 ## Design Notes
 
 *   **Swap Functionality:** The swap button swaps the values of the two amount fields and inverts the calculation logic.
-*   **Font:** The original design specified the "Messina Sans" font. However, Messina Sans is a commercial font that requires a paid license. To avoid legal issues, this app uses the default system font.
+*   **Font:** The original design specified the "Messina Sans" font. However, Messina Sans is a commercial font that requires a paid license. This app uses the default system font.
 
 ## How to Run the App
 

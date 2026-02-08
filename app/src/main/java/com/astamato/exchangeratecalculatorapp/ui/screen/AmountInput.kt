@@ -22,7 +22,6 @@ fun AmountInput(
   state: ExchangeRateUiState.Success,
   onAmountChange: (String) -> Unit,
   onCurrencySelected: (String) -> Unit,
-  onSwap: () -> Unit,
   onActiveFieldChange: (ActiveField) -> Unit,
 ) {
   var expanded by remember { mutableStateOf(false) }
