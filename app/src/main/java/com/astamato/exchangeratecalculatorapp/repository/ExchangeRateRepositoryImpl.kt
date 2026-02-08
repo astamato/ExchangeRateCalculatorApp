@@ -1,6 +1,7 @@
 package com.astamato.exchangeratecalculatorapp.repository
 
 import android.util.Log
+import com.astamato.exchangeratecalculatorapp.config.CurrenciesConstants
 import com.astamato.exchangeratecalculatorapp.data.Ticker
 import com.astamato.exchangeratecalculatorapp.network.ExchangeRateApiService
 import com.astamato.exchangeratecalculatorapp.schedulers.CoroutineDispatcherProvider
@@ -18,6 +19,7 @@ class ExchangeRateRepositoryImpl @Inject constructor(
       try {
         api.getTickers(currencies)
       } catch (e: Exception) {
+        Log.e("ExchangeRateRepo", "getTickers() failed", e)
         emptyList()
       }
     }
@@ -27,11 +29,11 @@ class ExchangeRateRepositoryImpl @Inject constructor(
       try {
         val currencies = api.getAvailableCurrencies()
         currencies.ifEmpty {
-          listOf("MXN", "ARS", "BRL", "COP")
+          CurrenciesConstants.DEFAULT_CURRENCIES
         }
       } catch (e: Exception) {
         Log.e("ExchangeRateRepo", "getAvailableCurrencies() failed", e)
-        listOf("MXN", "ARS", "BRL", "COP")
+        CurrenciesConstants.DEFAULT_CURRENCIES
       }
     }
 }

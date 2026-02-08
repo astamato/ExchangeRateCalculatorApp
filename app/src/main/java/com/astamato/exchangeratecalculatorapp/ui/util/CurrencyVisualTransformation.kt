@@ -36,8 +36,7 @@ class CurrencyVisualTransformation : VisualTransformation {
 
     val offsetMapping =
       object : OffsetMapping {
-        override fun originalToTransformed(offset: Int): Int =
-          originalToTransformedOffsets[offset.coerceIn(0, originalText.length)]
+        override fun originalToTransformed(offset: Int): Int = originalToTransformedOffsets[offset.coerceIn(0, originalText.length)]
 
         override fun transformedToOriginal(offset: Int): Int {
           if (offset <= 0) return 0
