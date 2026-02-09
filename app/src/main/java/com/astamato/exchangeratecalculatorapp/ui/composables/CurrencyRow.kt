@@ -137,7 +137,7 @@ fun CurrencyRow(
           .widthIn(min = 50.dp, max = 150.dp),
       textStyle =
         MaterialTheme.typography.bodyLarge.copy(
-          fontWeight = if (isActive) FontWeight.Bold else FontWeight.Light,
+          fontWeight = FontWeight.Bold,
           color = MaterialTheme.colorScheme.onSurface,
           textAlign = TextAlign.End,
         ),

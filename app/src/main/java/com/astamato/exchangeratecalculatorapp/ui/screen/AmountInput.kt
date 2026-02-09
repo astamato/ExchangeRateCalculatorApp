@@ -5,6 +5,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -12,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import com.astamato.exchangeratecalculatorapp.ui.viewmodel.ActiveField
 import com.astamato.exchangeratecalculatorapp.ui.viewmodel.ExchangeRateUiState
@@ -34,6 +36,7 @@ fun AmountInput(
     },
     label = { Text(if (state.isUsdcPrimary) "USDC" else state.selectedCurrency) },
     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+    textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
   )
 
   TextField(
@@ -44,6 +47,7 @@ fun AmountInput(
     },
     label = { Text(if (state.isUsdcPrimary) state.selectedCurrency else "USDC") },
     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+    textStyle = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
   )
 
   ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {

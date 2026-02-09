@@ -37,6 +37,20 @@ The application follows the modern Android architecture guidelines and uses the 
 3.  Let Gradle sync and build the project.
 4.  Run the `app` configuration on an Android emulator or a physical device.
 
+## Running Tests
+
+To run the unit tests, use the following Gradle task:
+
+```bash
+./gradlew :app:testDebugUnitTest
+```
+
+To run the instrumentation tests (requires a running emulator or physical device), use:
+
+```bash
+./gradlew :app:testDebugUnitTest
+```
+
 ## Code Quality
 
 This project uses `ktlint` to enforce Kotlin coding standards. To run ktlint, execute the following Gradle task:

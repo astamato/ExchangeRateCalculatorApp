@@ -33,7 +33,7 @@ class MainViewModel @Inject constructor(
         val initialTicker = tickers.find { it.book.endsWith(selectedCurrency.lowercase()) }
         val exchangeRate = initialTicker?.ask?.toBigDecimal() ?: BigDecimal.ONE
         val amount1 = "1"
-        val amount2 = exchangeRate.setScale(2, RoundingMode.HALF_UP).toPlainString()
+        val amount2 = formatAmount(exchangeRate)
 
         _uiState.value =
           ExchangeRateUiState.Success(
@@ -67,7 +67,7 @@ class MainViewModel @Inject constructor(
       _uiState.value =
         currentState.copy(
           amountPrimary = amount,
-          amountSecondary = newAmount2.setScale(2, RoundingMode.HALF_UP).toPlainString(),
+          amountSecondary = formatAmount(newAmount2),
         )
     }
   }
@@ -88,7 +88,7 @@ class MainViewModel @Inject constructor(
 
       _uiState.value =
         currentState.copy(
-          amountPrimary = newAmount1.setScale(2, RoundingMode.HALF_UP).toPlainString(),
+          amountPrimary = formatAmount(newAmount1),
           amountSecondary = amount,
         )
     }
@@ -129,4 +129,9 @@ class MainViewModel @Inject constructor(
       onSecondaryAmountChange(currentState.amountSecondary)
     }
   }
+
+  private fun formatAmount(amount: BigDecimal): String =
+    amount.setScale(2, RoundingMode.HALF_UP)
+      .stripTrailingZeros()
+      .toPlainString()
 }
