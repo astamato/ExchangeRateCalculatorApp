@@ -16,8 +16,9 @@ A Jetpack Compose Android app for calculating exchange rates between USDC and lo
 ## Critical Business Logic
 - **Base Currency:** The application always uses **USDC** as the base for calculations.
 - **Exchange Rates:**
-    - `ask` price: Used for buying USDC (converting Local -> USDC).
-    - `bid` price: Used for selling USDC (converting USDC -> Local).
+    - The app distinguishes between buying and selling directions to use the correct rate:
+        - **USDC → Local (Selling USDC):** Uses the **`bid`** price.
+        - **Local → USDC (Buying USDC):** Uses the **`ask`** price.
 - **Hardcoded Currencies:** Due to API limitations, the available currencies are hardcoded to `["MXN", "ARS", "BRL", "COP"]`.
 
 ## UI & Design Conventions

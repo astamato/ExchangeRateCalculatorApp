@@ -128,7 +128,14 @@ fun CurrencyExchangeContent(
   val sheetState = rememberModalBottomSheetState()
 
   val selectedTicker = state.tickers.find { it.book.endsWith(state.selectedCurrency.lowercase()) }
-  val exchangeRate = selectedTicker?.ask?.toBigDecimal() ?: BigDecimal.ONE
+  // When USDC is primary (Selling USDC), show 'bid'.
+  // When Local is primary (Buying USDC), show 'ask'.
+  val exchangeRate = if (state.isUsdcPrimary) {
+    selectedTicker?.bid?.toBigDecimal() ?: BigDecimal.ONE
+  } else {
+    selectedTicker?.ask?.toBigDecimal() ?: BigDecimal.ONE
+  }
+
   val numberFormat =
     NumberFormat.getNumberInstance(Locale.US).apply {
       maximumFractionDigits = 2

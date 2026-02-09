@@ -18,9 +18,9 @@ import kotlinx.serialization.Serializable
  * ```
  *
  * @property ask The asking price - the price at which you can BUY the base currency (USDC).
- *               This is what sellers are asking for. We use this when converting USDC → local currency.
+ *               The app uses this value when converting from Local currency → USDC.
  * @property bid The bid price - the price at which you can SELL the base currency (USDC).
- *               This is what buyers are offering. We use this when converting local currency → USDC.
+ *               The app uses this value when converting from USDC → Local currency.
  * @property book The trading pair identifier in format "base_quote" (e.g., "usdc_mxn", "usdc_ars").
  *                The base currency is USDC, the quote currency is the local currency (MXN, ARS, BRL, COP).
  * @property date ISO 8601 timestamp of when this ticker was last updated.

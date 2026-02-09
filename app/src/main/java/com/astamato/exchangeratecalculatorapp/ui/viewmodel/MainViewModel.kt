@@ -31,9 +31,11 @@ class MainViewModel @Inject constructor(
         val tickers = repository.getTickers(currencies.joinToString(","))
         val selectedCurrency: String = currencies.first()
         val initialTicker = tickers.find { it.book.endsWith(selectedCurrency.lowercase()) }
-        val exchangeRate = initialTicker?.ask?.toBigDecimal() ?: BigDecimal.ONE
+
+        // Initial state: USDC is primary (on top). USDC -> Local = Selling USDC = Use bid.
+        val bidRate = initialTicker?.bid?.toBigDecimal() ?: BigDecimal.ONE
         val amount1 = "1"
-        val amount2 = formatAmount(exchangeRate)
+        val amount2 = formatAmount(bidRate)
 
         _uiState.value =
           ExchangeRateUiState.Success(
@@ -55,13 +57,16 @@ class MainViewModel @Inject constructor(
     if (currentState is ExchangeRateUiState.Success) {
       val newAmount = amount.toBigDecimalOrNull() ?: BigDecimal.ZERO
       val selectedTicker = currentState.tickers.find { it.book.endsWith(currentState.selectedCurrency.lowercase()) }
-      val exchangeRate = selectedTicker?.ask?.toBigDecimal() ?: BigDecimal.ONE
+      val askRate = selectedTicker?.ask?.toBigDecimal() ?: BigDecimal.ONE
+      val bidRate = selectedTicker?.bid?.toBigDecimal() ?: BigDecimal.ONE
 
       val newAmount2 =
         if (currentState.isUsdcPrimary) {
-          newAmount.multiply(exchangeRate)
+          // USDC on top, user changed USDC. Conversion: USDC -> Local (Selling USDC) = Use bid.
+          newAmount.multiply(bidRate)
         } else {
-          if (exchangeRate != BigDecimal.ZERO) newAmount.divide(exchangeRate, 8, RoundingMode.HALF_UP) else BigDecimal.ZERO
+          // Local on top, user changed Local. Conversion: Local -> USDC (Buying USDC) = Use ask.
+          if (askRate != BigDecimal.ZERO) newAmount.divide(askRate, 8, RoundingMode.HALF_UP) else BigDecimal.ZERO
         }
 
       _uiState.value =
@@ -77,13 +82,16 @@ class MainViewModel @Inject constructor(
     if (currentState is ExchangeRateUiState.Success) {
       val newAmount = amount.toBigDecimalOrNull() ?: BigDecimal.ZERO
       val selectedTicker = currentState.tickers.find { it.book.endsWith(currentState.selectedCurrency.lowercase()) }
-      val exchangeRate = selectedTicker?.ask?.toBigDecimal() ?: BigDecimal.ONE
+      val askRate = selectedTicker?.ask?.toBigDecimal() ?: BigDecimal.ONE
+      val bidRate = selectedTicker?.bid?.toBigDecimal() ?: BigDecimal.ONE
 
       val newAmount1 =
         if (currentState.isUsdcPrimary) {
-          if (exchangeRate != BigDecimal.ZERO) newAmount.divide(exchangeRate, 8, RoundingMode.HALF_UP) else BigDecimal.ZERO
+          // USDC on top, user changed Local. Conversion: Local -> USDC (Buying USDC) = Use ask.
+          if (askRate != BigDecimal.ZERO) newAmount.divide(askRate, 8, RoundingMode.HALF_UP) else BigDecimal.ZERO
         } else {
-          newAmount.multiply(exchangeRate)
+          // Local on top, user changed USDC. Conversion: USDC -> Local (Selling USDC) = Use bid.
+          newAmount.multiply(bidRate)
         }
 
       _uiState.value =
@@ -106,12 +114,42 @@ class MainViewModel @Inject constructor(
   fun onSwapCurrencies() {
     val currentState = _uiState.value
     if (currentState is ExchangeRateUiState.Success) {
-      _uiState.value =
-        currentState.copy(
-          isUsdcPrimary = !currentState.isUsdcPrimary,
-          amountPrimary = currentState.amountSecondary,
-          amountSecondary = currentState.amountPrimary,
-        )
+      val newIsUsdcPrimary = !currentState.isUsdcPrimary
+      val newAmountPrimary = currentState.amountSecondary
+      val newAmountSecondary = currentState.amountPrimary
+
+      val selectedTicker = currentState.tickers.find { it.book.endsWith(currentState.selectedCurrency.lowercase()) }
+      val askRate = selectedTicker?.ask?.toBigDecimal() ?: BigDecimal.ONE
+      val bidRate = selectedTicker?.bid?.toBigDecimal() ?: BigDecimal.ONE
+
+      val finalAmountPrimary: String
+      val finalAmountSecondary: String
+
+      if (currentState.activeField == ActiveField.PRIMARY) {
+        finalAmountPrimary = newAmountPrimary
+        val amountDec = newAmountPrimary.toBigDecimalOrNull() ?: BigDecimal.ZERO
+        val calculated = if (newIsUsdcPrimary) {
+          amountDec.multiply(bidRate)
+        } else {
+          if (askRate != BigDecimal.ZERO) amountDec.divide(askRate, 8, RoundingMode.HALF_UP) else BigDecimal.ZERO
+        }
+        finalAmountSecondary = formatAmount(calculated)
+      } else {
+        finalAmountSecondary = newAmountSecondary
+        val amountDec = newAmountSecondary.toBigDecimalOrNull() ?: BigDecimal.ZERO
+        val calculated = if (newIsUsdcPrimary) {
+          if (askRate != BigDecimal.ZERO) amountDec.divide(askRate, 8, RoundingMode.HALF_UP) else BigDecimal.ZERO
+        } else {
+          amountDec.multiply(bidRate)
+        }
+        finalAmountPrimary = formatAmount(calculated)
+      }
+
+      _uiState.value = currentState.copy(
+        isUsdcPrimary = newIsUsdcPrimary,
+        amountPrimary = finalAmountPrimary,
+        amountSecondary = finalAmountSecondary,
+      )
     }
   }
 
